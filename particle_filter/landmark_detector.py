@@ -1,4 +1,5 @@
 import rclpy
+from rclpy import duration
 from rclpy.node import Node
 from builtin_interfaces.msg import Time, Duration
 from std_msgs.msg import String
@@ -9,10 +10,8 @@ from rclpy.qos import qos_profile_sensor_data, QoSProfile
 from std_msgs.msg import Float64
 import math
 import numpy as np
-from example_interfaces.msg import Float64MultiArray
 from numpy.random import randint, random
-from rclpy.duration import Duration
-
+from std_msgs.msg import ColorRGBA
 class ScanSubscriber(Node):
 
     def __init__(self):
@@ -24,7 +23,6 @@ class ScanSubscriber(Node):
         # Initialize publisher
         self.landmarks_pub = self.create_publisher(Point, 'landmarks_pose', qos)
         self.landmarks_marker_pub = self.create_publisher(Marker, 'landmarks_marker', 10)
-        self.marker = Marker()
         
 
         # Initialise subscribers
@@ -143,13 +141,12 @@ class ScanSubscriber(Node):
 
     def scan2cartesian(self,lidardata):
         positions = []
-        lidar_bins = [np.radians(x) for x in range(len(lidardata))]
+        # lidar_bins = [np.radians(x) for x in range(len(lidardata))]
         increment = 0.01745329238474369
         for degree in range(len(lidardata)):
             distance  = lidardata[degree]
             # radians = lidar_bins[degree]
             radians = degree*increment
-
             x, y = self.polar2cartesian(distance, radians)
             positions.append([x,y])
         return positions
@@ -157,32 +154,20 @@ class ScanSubscriber(Node):
 
    
     
-    def landmark_publisher(self,x,y):
-        self.point = Point()
-        self.point.x = float(x)
-        self.point.y = float(y)
-        self.landmarks_pub.publish(self.point)
+    def landmark_publisher(self,x,y,R):
+        self.landmarks_pub.publish(Point(x=float(x), y=float(y), z=float(R)))
     
     def cone_marker_publisher(self,xc,yc,R,tag):
         self.marker = Marker()
-        # self.marker.lifetime = Duration()
         self.marker.header.frame_id = "base_scan"
         # self.marker.header.stamp = rclpy.get_clock.now()
         self.marker.id = tag
         self.marker.type = Marker.CYLINDER
         self.marker.action = Marker.ADD
-        self.marker.scale.x = 0.15
-        self.marker.scale.y = 0.15
-        self.marker.scale.z = 0.4
-        self.marker.color.a = 1.0
-        self.marker.color.r = random(1)[0]
-        self.marker.color.g = random(1)[0]
-        self.marker.color.b = random(1)[0]
-        self.marker.pose.orientation.w = 1.0
-        self.marker.pose.position.x = -float(xc)
-        self.marker.pose.position.y = -float(yc)
-        self.marker.pose.position.z = 0.0
-        # self.marker.lifetime = self.Duration(0.5)
+        self.marker.scale = Vector3(x=0.15,y=0.15,z=0.4)
+        self.marker.color = ColorRGBA(r=random(1)[0],g=random(1)[0],b=random(1)[0],a=1.0)
+        self.marker.pose= Pose(position = Point(x=-float(xc),y=-float(yc),z=float(0)), orientation = Quaternion(x=float(0),y=float(0),z=float(0),w=float(1)))
+        self.marker.lifetime = Duration(sec = 1,nanosec=0)
         self.landmarks_marker_pub.publish(self.marker)
         print("cone marker published")
 
@@ -196,26 +181,18 @@ class ScanSubscriber(Node):
         # cluster the cartesian coordinates
         clusters, outliers = self.cartesian_clustering(cartesian_coordinates)
 
-
         # for i in range(len(clusters)):
         #     print(len(clusters[i]), clusters[i])
         #     print('-----')
-
 
         # fit circles to the clusters
         tag = 0
         for cluster in clusters:
             try:
                 xc, yc, R = self.circlefit(cluster)
-                # print(xc, yc, R)
-                # convert to float
-                xc = float(xc)
-                yc = float(yc)
-                R = float(R)
                 print(xc, yc, R)
-                # print(type(xc))
                 # publish landmark
-                self.landmark_publisher(xc, yc)
+                self.landmark_publisher(xc, yc,R)
 
                 if 0.065 < R < 0.08: #ideal 0.070744334 m
                     self.cone_marker_publisher(-xc,-yc,R,tag)
