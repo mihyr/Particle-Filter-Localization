@@ -16,10 +16,10 @@ def generate_launch_description():
          '/robot.launch.py'])
       )
     tb3_teleop = Node(
-        package='turtlebot3_teleop',
-        node_executable='teleop_keyboard',
-        output='screen',
-        name = 'tb3_teleop_keyboard'
+            package='turtlebot3_teleop',
+            executable='teleop_keyboard',
+            name = 'tb3_teleop_keyboard',
+            output='screen'
         )
     pf_landmark_detector =  Node(
             package='particle_filter',
@@ -29,5 +29,6 @@ def generate_launch_description():
 
     return LaunchDescription([
         tb3_bringup,
+        tb3_teleop,
         pf_landmark_detector
     ])
