@@ -36,7 +36,7 @@ def circlefit(positions):
     R = np.sqrt(xc**2+yc**2 + c[2])
     # print(xc, yc, R)
     
-    return xc, yc, R
+    return float(xc), float(yc), float(R)
 
 def cartesian2polar(x,y):
     radius = math.sqrt(math.pow(x, 2) + math.pow(y, 2))
@@ -70,6 +70,7 @@ def clustering(scan):
         # print(len(elem), elem)
         if len(elem) > 12:
             refined_clusters.append(elem)
+        
         else:
             outliers.append(elem)
 
@@ -87,7 +88,7 @@ def cartesian_clustering(coordinates):
             break
         eucledian_distance = math.sqrt(math.pow(coordinates[i+1][0] - coordinates[i][0], 2) + math.pow(coordinates[i+1][1] - coordinates[i][1], 2))
         # print(i,eucledian_distance)
-        if math.sqrt(math.pow(coordinates[i+1][0] - coordinates[i][0], 2) + math.pow(coordinates[i+1][1] - coordinates[i][1], 2)) < 0.01:
+        if eucledian_distance < 0.01:
             cluster.append(coordinates[i])
         else:
             cluster.append(coordinates[i])
@@ -100,15 +101,17 @@ def cartesian_clustering(coordinates):
         # print(len(elem), elem)
         if len(elem) > 12:
             refined_clusters.append(elem)
-        else:
+        elif 0 < len(elem) < 12:
             outliers.append(elem)
+        else:
+            pass
 
     return refined_clusters, outliers
 
 def scan2cartesian(lidardata, increment):
     positions = []
     # lidar_bins = [np.radians(x) for x in range(len(lidardata))]
-    print('mihir')
+    
     for degree in range(len(lidardata)):
         distance  = lidardata[degree]
         # radians = lidar_bins[degree]

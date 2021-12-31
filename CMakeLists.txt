@@ -17,6 +17,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclpy REQUIRED)
 
 
+
 # Include Cpp "include" directory
 include_directories(include)
 
@@ -39,6 +40,15 @@ install(PROGRAMS
   DESTINATION lib/${PROJECT_NAME}
 )
 
+find_package(rosidl_default_generators REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/LdPose.msg"
+  # "srv/AddThreeInts.srv"
+  DEPENDENCIES geometry_msgs std_msgs
+ )
 
 # uncomment the following section in order to fill in
 # further dependencies manually.
