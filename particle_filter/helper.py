@@ -88,13 +88,14 @@ def cartesian_clustering(coordinates):
             break
         eucledian_distance = math.sqrt(math.pow(coordinates[i+1][0] - coordinates[i][0], 2) + math.pow(coordinates[i+1][1] - coordinates[i][1], 2))
         # print(i,eucledian_distance)
-        if eucledian_distance < 0.01:
-            cluster.append(coordinates[i])
-        else:
-            cluster.append(coordinates[i])
-            clusters.append(cluster)
-            cluster = []
-    
+        if coordinates[i] != [0,0]:
+            if eucledian_distance < 0.01:
+                cluster.append(coordinates[i])
+            else:
+                cluster.append(coordinates[i])
+                clusters.append(cluster)
+                cluster = []
+            
     refined_clusters = []
     outliers = []
     for elem in clusters:
@@ -117,5 +118,5 @@ def scan2cartesian(lidardata, increment):
         # radians = lidar_bins[degree]
         radians = degree*increment
         x, y = polar2cartesian(distance, radians)
-        positions.append([x,y])
+        positions.append([-x,-y])
     return positions

@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
 import rclpy
-from rclpy import duration
 from rclpy.node import Node
-from builtin_interfaces.msg import Time, Duration
 from std_msgs.msg import String
 from sensor_msgs.msg import LaserScan
-from visualization_msgs.msg import Marker    
+ 
 from geometry_msgs.msg import Point, Pose, Point, Quaternion, Vector3
 from rclpy.qos import qos_profile_sensor_data, QoSProfile
 from std_msgs.msg import Float64
 import numpy as np
-from numpy.random import randint, random
-from std_msgs.msg import ColorRGBA
 from particle_filter.helper import polar2cartesian, scan2cartesian, circlefit, cartesian2polar, clustering, cartesian_clustering
 from particle_filter.msg import LdPose
 
@@ -25,9 +21,7 @@ class LandmarkPublisher(Node):
 
         # Initialize publisher
         self.landmarks_pub = self.create_publisher(LdPose, 'landmarks_pose', qos)
-        self.landmarks_marker_pub = self.create_publisher(Marker, 'landmarks_marker', 10)
         
-
         # Initialise subscribers
 
         self.subscription = self.create_subscription(
@@ -39,19 +33,6 @@ class LandmarkPublisher(Node):
         # self.subscription  # prevent unused variable warning
         self.get_logger().info("Turtlebot3 obstacle detection node has been initialised.")   
 
-    # def cone_marker_publisher(self,xc,yc,R,tag):
-    #     self.marker = Marker()
-    #     self.marker.header.frame_id = "base_scan"
-    #     # self.marker.header.stamp = rclpy.get_clock.now()
-    #     self.marker.id = tag
-    #     self.marker.type = Marker.CYLINDER
-    #     self.marker.action = Marker.ADD
-    #     self.marker.scale = Vector3(x=0.15,y=0.15,z=0.4)
-    #     self.marker.color = ColorRGBA(r=random(1)[0],g=random(1)[0],b=random(1)[0],a=1.0)
-    #     self.marker.pose= Pose(position = Point(x=-float(xc),y=-float(yc),z=float(0)), orientation = Quaternion(x=float(0),y=float(0),z=float(0),w=float(1)))
-    #     self.marker.lifetime = Duration(sec = 1,nanosec=0)
-    #     self.landmarks_marker_pub.publish(self.marker)
-    #     print("cone marker published")
      
     def landmark_publisher(self,total_landmarks,landmark_ids,landmark_coordinates,clusters,outliers):
         self.ldpose = LdPose()
@@ -103,11 +84,6 @@ class LandmarkPublisher(Node):
                     
                     for xcor,ycor in cluster:
                         clusterid.append(Point(x=float(xcor),y=float(ycor),z =float(tag)))
-                    # clusterid.append(Point(x=float(xcor),y=float(ycor),z =float(tag)) for xcor,ycor in cluster)
-
-                    # for xcor,ycor in cluster:
-                        # print(xcor,ycor)
-        
 
             except np.linalg.LinAlgError as err:
                 if 'Singular matrix' in str(err):
@@ -115,9 +91,9 @@ class LandmarkPublisher(Node):
                 else:
                     raise
         
-        # for outlier in outliers:
-        #     for xcor,ycor in outlier:
-        #         outlierid.append(Point(x=float(xcor),y=float(ycor),z =float(-1)))
+        for outlier in outliers:
+            for xcor,ycor in outlier:
+                outlierid.append(Point(x=float(xcor),y=float(ycor),z =float(-1)))
         
         self.landmark_publisher(total_landmarks,landmark_ids,landmark_coordinates,clusterid,outlierid)
         # self.init_scan_state = True
