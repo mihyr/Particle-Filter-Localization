@@ -1,0 +1,3 @@
+core_filter:
+  landmark_ground_truth:
+    my_global_param: "Test"

@@ -21,14 +21,14 @@ def generate_launch_description():
             name = 'tb3_teleop_keyboard',
             output='screen'
         )
-    pf_landmark_detector =  Node(
+    landmark_detector =  Node(
             package='particle_filter',
             executable='landmark_detector.py',
             name='landmark_detector'
         )
-
+    
     return LaunchDescription([
         tb3_bringup,
         tb3_teleop,
-        pf_landmark_detector
+        landmark_detector
     ])

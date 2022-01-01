@@ -38,12 +38,13 @@ ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS
   scripts/landmark_detector.py
   scripts/visualizer.py
+  scripts/core_filter.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# Install launch files.
+# Install launch, rviz and config directories
 install(DIRECTORY
-  launch
+  launch config rviz
   DESTINATION share/${PROJECT_NAME}/
 )
 
