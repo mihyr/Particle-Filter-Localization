@@ -8,7 +8,7 @@ from geometry_msgs.msg import Point, Pose, Point, Quaternion, Vector3
 from rclpy.qos import qos_profile_sensor_data, QoSProfile
 from std_msgs.msg import Float64
 import numpy as np
-from particle_filter.helper import polar2cartesian, scan2cartesian, circlefit, cartesian2polar, clustering, cartesian_clustering
+from particle_filter.landmark_helper import polar2cartesian, scan2cartesian, circlefit, cartesian2polar, clustering, cartesian_clustering
 from particle_filter.msg import LdPose
 
 class LandmarkPublisher(Node):
@@ -23,7 +23,6 @@ class LandmarkPublisher(Node):
         self.landmarks_pub = self.create_publisher(LdPose, 'landmarks_pose', qos)
         
         # Initialise subscribers
-
         self.subscription = self.create_subscription(
             LaserScan,
             'scan',
@@ -31,7 +30,7 @@ class LandmarkPublisher(Node):
             qos_profile=qos_profile_sensor_data)
 
         # self.subscription  # prevent unused variable warning
-        self.get_logger().info("Turtlebot3 obstacle detection node has been initialised.")   
+        self.get_logger().info("Particle Filter Obstacle detection node has been initialised.")   
 
      
     def landmark_publisher(self,total_landmarks,landmark_ids,landmark_coordinates,clusters,outliers):

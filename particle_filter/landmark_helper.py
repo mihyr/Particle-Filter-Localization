@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Helper functions
+# Landmark detection helper functions
 import numpy as np
 import math
 

@@ -45,7 +45,7 @@ install(PROGRAMS
 # Install launch, rviz and config directories
 install(DIRECTORY
   launch config rviz
-  DESTINATION share/${PROJECT_NAME}/
+  DESTINATION share/${PROJECT_NAME}
 )
 
 # Generate Msgs

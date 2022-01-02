@@ -1,0 +1,12 @@
+core_filter:
+  ros__parameters:
+    ld_ground_truth:
+      ld1: [0.0, 0.0, 0.0]
+      ld2: [0.0, 0.0, 0.0]
+      ld3: [0.0, 0.0, 0.0]
+      ld4: [0.0, 0.0, 0.0]
+    map_size:
+      x_range: [0.0, 10.0]
+      y_range: [0.0, 10.0]
+    particles:
+      max_particles: 1000

@@ -13,10 +13,10 @@ def generate_launch_description():
     config = os.path.join(
             get_package_share_directory('particle_filter'),
             'config',
-            'landmark_ground_truth.yaml'
+            'params.yaml'
       )
 
-    pf_landmark_detector =  Node(
+    landmark_detector =  Node(
             package='particle_filter',
             executable='landmark_detector.py',
             name='landmark_detector'
@@ -26,6 +26,14 @@ def generate_launch_description():
             executable='visualizer.py',
             name='visualizer'
         )
+    
+    core_filter = Node(
+            package='particle_filter',
+            executable='core_filter.py',
+            name='core_filter',
+            parameters=[config]
+        )
+
     tb3_teleop = Node(
             package='turtlebot3_teleop',
             executable='teleop_keyboard',
@@ -43,11 +51,13 @@ def generate_launch_description():
             package='rviz2',
             executable='rviz2',
             name='rviz2',
-            arguments=['-d', str(rviz_config)]
+            arguments=['-d', str(rviz_config)],
+            output='screen'
         )
     
     return LaunchDescription([
         rviz,
-        pf_landmark_detector,
-        visualizer
+        landmark_detector,
+        visualizer,
+        core_filter
     ])
