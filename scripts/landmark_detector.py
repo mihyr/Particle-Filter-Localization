@@ -35,7 +35,8 @@ class LandmarkPublisher(Node):
      
     def landmark_publisher(self,total_landmarks,landmark_ids,landmark_coordinates,clusters,outliers):
         self.ldpose = LdPose()
-        # self.ldpose.header = 
+        self.ldpose.header.frame_id = "base_scan"
+        self.ldpose.header.stamp = self.get_clock().now().to_msg()
         self.ldpose.num_of_landmarks = total_landmarks
         self.ldpose.landmark_ids = landmark_ids
         self.ldpose.landmark_coordinates = landmark_coordinates

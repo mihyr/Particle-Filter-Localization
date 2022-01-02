@@ -55,6 +55,7 @@ find_package(std_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/LdPose.msg"
+  "msg/Particles.msg"
   # "srv/AddThreeInts.srv"
   DEPENDENCIES geometry_msgs std_msgs
  )

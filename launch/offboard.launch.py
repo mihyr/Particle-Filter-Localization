@@ -56,7 +56,7 @@ def generate_launch_description():
         )
     
     return LaunchDescription([
-        rviz,
+        # rviz,
         landmark_detector,
         visualizer,
         core_filter
