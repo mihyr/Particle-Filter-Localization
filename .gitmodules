@@ -1,0 +1,4 @@
+[submodule "q-learning"]
+	path = Multi-Robot-QLearning
+	url = git@github.com:mihyr/Multi-Robot-QLearning.git
+	branch = master
