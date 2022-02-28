@@ -43,12 +43,14 @@ class ParticleFilterVisualizer(Node):
         self.marker.header.frame_id = "base_scan"
         self.marker.header.stamp = self.get_clock().now().to_msg()
         self.marker.id = tag
-        self.marker.type = Marker.CYLINDER
+        self.marker.type = Marker.MESH_RESOURCE
+        self.marker.mesh_resource = "package://particle_filter/meshes/Traffic_cone.stl"
+        self.marker.mesh_use_embedded_materials = False
         self.marker.action = Marker.ADD
-        self.marker.scale = Vector3(x=0.15,y=0.15,z=0.4)
+        self.marker.scale = Vector3(x=0.018,y=0.018,z=0.018)
         self.marker.color = ColorRGBA(r=random(1)[0],g=random(1)[0],b=random(1)[0],a=1.0)
-        self.marker.pose= Pose(position = Point(x=float(xc),y=float(yc),z=float(0)), orientation = Quaternion(x=float(0),y=float(0),z=float(0),w=float(1)))
-        self.marker.lifetime = Duration(sec = 2,nanosec=0)
+        self.marker.pose= Pose(position = Point(x=float(xc),y=float(yc),z=float(-0.175)), orientation = Quaternion(x=float(0),y=float(0),z=float(0),w=float(1)))
+        self.marker.lifetime = Duration(sec = 1,nanosec=0)
         self.landmarks_marker_pub.publish(self.marker)
         # print(f'cone marker published for tag {tag}')
 
@@ -93,8 +95,8 @@ class ParticleFilterVisualizer(Node):
             self.marker.type = Marker.SPHERE
             self.marker.action = Marker.ADD
             self.marker.scale = Vector3(x=0.02,y=0.02,z=0.02)
-            self.marker.color = ColorRGBA(r=random(1)[0],g=random(1)[0],b=random(1)[0],a=1.0)
-            self.marker.color = ColorRGBA(r=0.0,g=1.0,b=0.0,a=1.0)
+            # self.marker.color = ColorRGBA(r=random(1)[0],g=random(1)[0],b=random(1)[0],a=1.0)
+            self.marker.color = ColorRGBA(r=105.0,g=105.0,b=105.0,a=0.5)
             # self.marker.pose= Pose(position = Point(x=float(0),y=float(0),z=float(0)), orientation = Quaternion(x=float(0),y=float(0),z=float(0),w=float(1)))
             self.marker.pose.position = outliers[i]
             self.marker.pose.position.z = 0.05

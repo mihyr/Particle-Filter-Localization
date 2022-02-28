@@ -42,9 +42,9 @@ install(PROGRAMS
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# Install launch, rviz and config directories
+# Install launch, rviz, meshes and config directories
 install(DIRECTORY
-  launch config rviz
+  launch config rviz meshes
   DESTINATION share/${PROJECT_NAME}
 )
 

@@ -1,0 +1,92 @@
+version: "3.9"  # optional since v1.27.0
+services:
+    
+    webviz:
+        image: "cruise/webviz:latest" 
+        container_name: netbots-webviz
+        ports:
+            - "8080:8080"
+        networks:
+            netbots:
+                ipv4_address: "172.18.0.2"
+    ros:
+        build:
+            context: .
+            dockerfile: ./netbots-ros/Dockerfile
+        cap_add:
+            - NET_ADMIN
+        devices:
+            - /dev/net/tun:/dev/net/tun
+        container_name: netbots-ros
+        ports: 
+            - "11411:11311"
+            - "9090:9090"
+        image: "net-bots:latest"
+
+        volumes:
+            - ovpn-data:/vpn_ws/
+        depends_on: 
+            - openvpn-udp
+        links: 
+            - "openvpn-udp"
+        networks: 
+            netbots:
+                ipv4_address: "172.18.0.3"
+        command: roscore
+    
+    openvpn-udp:
+        cap_add:
+            - NET_ADMIN
+        image: kylemanna/openvpn
+        container_name: netbots-vpn
+        ports:
+            - "1194:1194/udp"
+        restart: always
+        volumes:
+            - ovpn-data:/etc/openvpn
+    
+    # openvpn-tcp:
+    #     cap_add:
+    #         - NET_ADMIN
+    #     image: kylemanna/openvpn
+    #     container_name: openvpn-tcp
+    #     ports:
+    #         - "1194:1194/tcp"
+    #     restart: always
+    #     volumes:
+    #         - ./openvpn-data:/etc/openvpn
+    #     command: 'ovpn_run --proto tcp'
+
+        networks: 
+            netbots:
+                ipv4_address: "172.18.0.4"
+
+    nginx:
+        build: 
+            context: .
+            dockerfile: ./netbots-nginx/Dockerfile
+        container_name: netbots-nginx
+        ports: 
+            - "80:80"
+            - "443:443"
+        depends_on: 
+            - webviz
+        links: 
+            - "webviz"
+        networks: 
+            netbots:
+                ipv4_address: "172.18.0.5"
+        
+networks: 
+    netbots:
+        name: netbots-network
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.18.0.0/16
+
+volumes:
+    ovpn-data:
+        external: true
+        name: ovpn-data
+    

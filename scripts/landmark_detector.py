@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from numpy.random.mtrand import f
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
@@ -74,8 +75,8 @@ class LandmarkPublisher(Node):
                 xc, yc, R = circlefit(cluster)
                 # print(type(xc), type(yc), type(R))
                 
-                if 0.065 < R < 0.08: #ideal 0.070744334 m
-
+                if 0.07 < R < 0.079: #ideal 0.070744334 m
+                    self.get_logger().info(f'R: {R}')
                     # self.cone_marker_publisher(-xc,-yc,R,tag)
                     total_landmarks = total_landmarks + 1
                     tag = tag + 1
